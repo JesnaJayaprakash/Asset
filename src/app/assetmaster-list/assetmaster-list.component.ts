@@ -21,9 +21,6 @@ export class AssetmasterListComponent implements OnInit {
   }
   reloadData(){
     this.masters=this.masterService.getMasterList();
-    this.masters.forEach(x=>{
-    console.log(x);
-    })
   }
 
   Logout(){

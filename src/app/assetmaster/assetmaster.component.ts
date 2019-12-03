@@ -66,7 +66,7 @@ export class AssetmasterComponent implements OnInit {
 
   addAsset(){
     
-    this.master.am_myyear=this.masterForm.controls.am_myear.value;
+    this.master.am_myyear=this.masterForm.controls.am_myyear.value;
     this.master.am_warranty=this.masterForm.controls.am_warranty.value;
     this.master.am_from=this.masterForm.controls.am_from.value;
     this.master.am_to=this.masterForm.controls.am_to.value;
@@ -76,6 +76,7 @@ export class AssetmasterComponent implements OnInit {
     this.master.am_model=this.masterForm.controls.am_model.value;
     this.purchase.pd_status='Asset Approved by Admin';
     this.service.updatePurchase(this.purchase.pd_id, this.purchase).subscribe();
+    console.log(this.master)
     this.service.postAsset(this.master).subscribe(x=>{
       this.toastr.success('Asset Registered Successfully');
       this.router.navigateByUrl('masterlist');

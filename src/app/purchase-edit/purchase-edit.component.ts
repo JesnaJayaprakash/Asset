@@ -51,17 +51,11 @@ get formControls(){
     this.purchase.pd_qty=this.purchase.pd_qty;
     this.purchase.assettype=this.purchase.assettype;
     this.purchase.vendorname=this.purchase.vendorname;
-    if(this.purchase.pd_odate<this.purchase.pd_ddate)
-    {
       this.purchaseservice.updatePurchase(this.id, this.purchase).subscribe(res=>{
         this.toastr.success('Purchase Updated');
         this.router.navigateByUrl("purchase");
       });
-    }
-  else
-  {
-    this.toastr.warning('date error');
-  }
+  
 
 }
 
