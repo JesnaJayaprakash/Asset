@@ -1,42 +1,59 @@
-<h1 class="display-4" style="text-align: center;"> {{title}}</h1>
-<h4 style="text-align: right;">Welcome {{username}}></h4>
-<ul class="nav nav-pills nav-fill">
-<li class="nav-item">
-  <a class="nav-link active" href="assetadd">Add Asset</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="assetlist"> Asset List</a>
-  </li>
-  <li class="nav-item">
-    <button (click)="logOut()" class="btn btn-primary">Logout</button>
-    </li>
-    </ul>
-    <form [formGroup]="assetForm" (ngSubmit)="upAsset()">
-      <input type="hidden"[(ngModel)]="asset.ad_id" fromControlName="assetId">
-      <div class="form-group" [ngClass]="{'has-error': isSubmitted && formControls.assetName.errors || formControls.assetName.touched || formControls.assetName.dirty }">
-        <label for="assetName"><b>Asset Name</b></label>
-        <input type="text" class="form-control" [(ngModel)]="asset.ad_name" aria-describedby="emailHelp" placeholder="Enter Asset Name" formControlName="assetName">
-        </div>
-        <div *ngIf="isSubmitted && formControls.assetName.errors" class="help-block">
-          <div *ngIf="formControls.assetName.errors.required">Asset Name is required</div>
-        </div>
-          <div class="alert alert-danger" role="alert" *ngIf="message">
-            {{message}}
-            </div>
-            <div class="form-group">
-              <label for="assetType"><b>Asset Type</b></label>
-             <select class="form-control" id="assettype" name="assettype" [(ngModel)]="asset.ad_type_id" formControlName="assetType">
-              <option value="">Select Asset Type</option>
-            <option *ngFor="let assettype of assettypes | async" value="{{assettype.at_id}}">{{assettype.at_name}}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="assetclass"><b>Asset Class</b></label>
-            <select class="form-control"[(ngModel="asset.ad_class" formControlName="assetclass">
-              <option value="">Select Asset Class</option>
-              <option value="HW">HW</option>
-              <option value="SW">SW</option>
-              </select>
-              </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+
+  <ul class="navbar-nav">
+      <li class="nav-item">
+          <a href="assets" class="nav-link" routerLinkActive="active">Asset List</a>
+      </li>
+      <li class="nav-item">
+          <a href="create" class="nav-link" routerLinkActive="active">Add Asset</a>
+
+      </li>
+      <li class="nav-item">
+          <a href="login" class="nav-link" routerLinkActive="active">LogOut</a>
+      </li>
+
+  </ul>
+
+</nav>
+<form [formGroup]="assetform" (ngSubmit)="updateAssets()">
+  <input type="hidden" #assetid [(ngModel)]="asset.ad_id" formControlName="ad_id">
+  <div class="form-group">
+      <label for="ad_name">Asset Name </label>
+      <input #assetname [(ngModel)]="asset.ad_name" type="text " formControlName="ad_name" class="form-control">
+
+  </div>
+  <div *ngIf="assetform.controls['ad_name'].invalid && (assetform.controls['ad_name'].dirty || assetform.controls['ad_name'].touched)" class="alert alert-danger">
+      <div *ngIf="assetform.controls['ad_name'].errors.required">
+        Asset Name is required.
+      </div> 
+      </div>
+ 
+
+  <div class="form-group">
+      <label for="ad_type_id">Asset type</label>
+      <select class="form-control" id="ad_type_id" [(ngModel)]="asset.ad_type_id" name="ad_type_id"
+          formControlName="ad_type_id">
+          <option value="">Choose Asset Type</option>
+          <option *ngFor="let assettype of assettypes | async" value="{{ assettype.at_id }}">{{ assettype.at_name }}
+          </option>
+      </select>
+
+  </div>
+
+  <div class="form-group">
+      <label for="  ad_class">Asset class</label>
+      <select
+        class="form-control"
+        formControlName="ad_class"
+        [(ngModel)]="asset.ad_class"
+      >
+        <option value="">Select Asset Class</option>
+        <option value="HW">Hardware</option>
+        <option value="SW">Software</option>
+      </select>
+  
+  </div>
+
+  <button type="submit" class="btn btn-primary" [disabled]="assetform.pristine || assetform.invalid"> Submit </button>
+</form>
+

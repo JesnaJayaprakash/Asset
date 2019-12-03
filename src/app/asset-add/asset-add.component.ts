@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {FormGroup,FormBuilder,Validators } from '@angular/forms';
-import { Asset } from '../asset';
+import { AssetDef } from '../asset';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AuthService } from '../login.service';
+import { Router } from '@angular/router';
 import { AssetService } from '../asset.service';
 import { Observable } from 'rxjs';
 import { Assettype } from '../assettype';
-import {ToastrService} from 'ngx-toastr';
-import {Router} from '@angular/router';
-import {AuthService} from '../auth.service';
-
-
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-asset-add',
@@ -16,60 +14,56 @@ import {AuthService} from '../auth.service';
   styleUrls: ['./asset-add.component.scss']
 })
 export class AssetAddComponent implements OnInit {
-  assetForm:FormGroup;
-  title:string="Asset Creation";
+  assetform:FormGroup
+  asset:AssetDef=new AssetDef();
   assettypes:Observable<Assettype[]>;
-  asset:Asset=new Asset();
-  message:string;
-  username:string;
-  isSubmitted=false;
-  constructor(private assetservice:AssetService,private asFormBuilder:FormBuilder,private toastr:ToastrService,private router:Router,private authservice:AuthService) { }
+ 
+  constructor(private formBuilder:FormBuilder,private service:AssetService,private route:Router,private toastr:ToastrService) { }
 
   ngOnInit() {
-  
-  this.assettypes=this.assetservice.getAssettypes();
-  this.assetForm=this.asFormBuilder.group({
-    assetName:['',Validators.required],
-    assetType:['',Validators.required],
-    assetclass:['',Validators.required]
-  });
-this.username=localStorage.getItem('userID');
-}
-get formControls(){
-  return this.assetForm.controls;
-}
-addAsset()
-{
-  this.isSubmitted=true;
-  if(this.assetForm.invalid)
-  {
-    return;
-  }
-this.asset.ad_name=this.assetForm.controls.assetName.value;
-this.asset.ad_type_id=this.assetForm.controls.assetType.value;
-this.asset.ad_class=this.assetForm.controls.assetclass.value;
-console.log(this.asset);
-this.assetservice.checkAsset(this.asset).subscribe(x=>{
-  console.log(x);
-  if(x==0){
-this.assetservice.addAssets(this.asset).subscribe(x=> {
-  this.toastr.success('Assets Added','Good for you');
-  this.ngOnInit();
-})
-  }
-  else{
- this.message="This Asset Already exists";
-  }
-})
-}
-clearMessage()
-{
-  this.message=""
+    
+    this.assetform=this.formBuilder.group({
+      ad_name:['',Validators.compose([Validators.required])],
+      ad_type_id:['',Validators.compose([Validators.required])],
+      ad_class:['',Validators.compose([Validators.required])],
+     
+    });
+    this.assettypes=this.service.getAssettypes();
 
 }
-logOut()
-{
-  this.authservice.logout();
-  this.router.navigate(['login']);
-}
+get formcontrol()
+  {
+    return this.assetform.controls;
+  }
+  addAssets()
+  {
+
+    this.asset.ad_name = this.assetform.controls.ad_name.value;
+    this.asset.ad_type_id = this.assetform.controls.ad_type_id.value;
+    this.asset.ad_class = this.assetform.controls.ad_class.value;
+
+    this.service.addAsset(this.asset).subscribe(res=>{
+      if(res==0)
+      {
+        this.toastr.success('Successfully Added', 'Great ;)');
+        
+      }
+      else
+      {
+        this.toastr.error("Asset already exist!!!!!!");
+      }
+
+    });
+ 
+    this.ngOnInit();
+
+    /*this.asset=this.assetform.value;
+    console.log(this.asset)
+    this.service.addAsset(this.asset).subscribe(x=>{alert("Asset added")});
+    this.ngOnInit();*/
+
+  }
+
+
+
 }

@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { AssetService } from '../asset.service';
-import { Asset } from '../asset';
-import { Observable } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
 
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+
+import { AssetDef } from '../asset';
+import { ToastrService } from 'ngx-toastr';
+import { AssetService } from '../asset.service';
 
 
 @Component({
@@ -14,30 +14,39 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./asset-list.component.scss']
 })
 export class AssetListComponent implements OnInit {
-  title: string = "Asset Creation";
-  assets: Observable<Asset[]>;
-  public popoverTitle: string = 'Delete';
-  public popoverMessage: string = 'Do you want to delete this Asset?';
-  public confirmClicked: boolean = false;
-  public cancelClicked: boolean = false;
-  username: string;
-  constructor(private assetservice: AssetService, private toastr: ToastrService, private authservice: AuthService, private router: Router) { }
+  asset: Observable<AssetDef>;
+  assets: Observable<AssetDef[]>;
+ 
+
+  constructor(private assetService: AssetService,private router: Router,private toastr:ToastrService) { }
 
   ngOnInit() {
-    this.assets = this.assetservice.listAssetList();
-   
-   
-    console.log('got it...')
-    this.username = localStorage.getItem('userID');
+    
+    this.reloadData();
   }
-  DeleteAsset(id: number) {
-    this.assetservice.deleteAsset(id).subscribe(x => {
-      this.toastr.error('Asset Deleted', ':(');
-      this.ngOnInit();
+  reloadData() {
+    this.assets = this.assetService.getAssetList();
+}
+deleteAsset(id:number){
+  if(confirm('Do you want to delete this record?'))
+  {
+    this.assetService.deleteAsset(id).subscribe(data=>{
+      this.toastr.warning('Deleted Successfully..!', 'Everything OK :)');
+      console.log(data);
     });
-  }
-  logOut() {
-    this.authservice.logout();
-    this.router.navigate(['login'])
+    this.reloadData();
   }
 }
+search(ad_name:string)
+{
+  this.asset=this.assetService.searchAsset(ad_name);
+  if(ad_name="")
+  {
+    this.asset=this.assetService.getAssetList();
+  }
+}
+
+
+}
+
+

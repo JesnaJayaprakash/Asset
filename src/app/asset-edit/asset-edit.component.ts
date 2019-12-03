@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {FormGroup,FormBuilder,Validators } from '@angular/forms';
-import { Asset } from '../asset';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { AssetService } from '../asset.service';
 import { Observable } from 'rxjs';
 import { Assettype } from '../assettype';
-import { ToastrService} from 'ngx-toastr';
-import { ActivatedRoute, Router} from '@angular/router';
-import { AuthService } from '../auth.service';
-
+import { AssetDef } from '../asset';
 
 @Component({
   selector: 'app-asset-edit',
@@ -15,47 +13,105 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./asset-edit.component.scss']
 })
 export class AssetEditComponent implements OnInit {
-  
-  constructor(private route:ActivatedRoute,private router:Router, private assetservice:AssetService,private asFormBuilder:FormBuilder,private toastr:ToastrService, private authservice:AuthService) { }
-  id:number;
-  assetForm:FormGroup;
-  title:string="Asset Creation";
+
+  asset: AssetDef;
+  assetform: FormGroup;
   assettypes:Observable<Assettype[]>;
-  asset:Asset=new Asset();
-  message:string;
-  username:string;
+  assets:Observable<AssetDef[]>;
+
+  constructor(private service: AssetService, private route: ActivatedRoute, private formBuilder:FormBuilder, private toastr:ToastrService) { }
+  id:number;
+  pdt: any;
+  
+  ngOnInit() {
+    this.id=this.route.snapshot.params["id"];
+    this.assetform=this.formBuilder.group({
+      ad_id: [Validators.required],
+      ad_name: [Validators.compose([Validators.required])],
+      ad_type_id: [Validators.compose([Validators.required])],
+      ad_class: [Validators.compose([Validators.required])]
+    }); 
+  //  this.assets=this.service.getAsset(this.id);
+   // this.asset=this.assets[0];
+   // console.log(this.asset.ad_name);
+    this.service.getAsset(this.id).subscribe(x=>{
+      this.asset=x;
+    }); 
+    this.assettypes=this.service.getAssettypes();
+     
+  }
+
+  get formControl(){
+    return this.assetform.controls;
+  
+  }
+
+  updateAssets()
+    {
+      if(this.assetform.invalid)
+      {
+        return;
+      }
+  
+      this.asset.ad_id=this.id;
+      this.asset.ad_name=this.assetform.controls.ad_name.value;
+      this.asset.ad_type_id=this.assetform.controls.ad_type_id.value;
+      this.asset.ad_class=this.assetform.controls.ad_class.value;
+      this.service.updateAsset(this.id,this.asset).subscribe(res=>{
+        this.toastr.success('Asset Updated');
+      });
+
+    }
+
+}
+
+/*export class AssetEditComponent implements OnInit {
+ 
+  
+  assetform:FormGroup
+  asset:AssetDef=new AssetDef();
+  id:number;
+ 
+  constructor(private service:AssetDefService,private route:ActivatedRoute,private formBuilder:FormBuilder,private toastr:ToastrService) { }
 
   ngOnInit() {
-this.assetForm=this.asFormBuilder.group({
-  assetId:[Validators.required],
-  assetName:[Validators.required],
-  assetType:[Validators.required],
-  assetclass:[Validators.required]
-});
-  this.id=this.route.snapshot.params["id"];
-  this.assettypes=this.assetservice.getAssettypes();
-  this.assetservice.getAsset(this.id).subscribe(x=>{
-    this.asset=x;
+    this.id=this.route.snapshot.params["id"];
+    console.log(this.id);
+    this.service.getAsset(this.id).subscribe(x=>{
+      this.asset=x;
+      
   });
-  this.username=localStorage.getItem('userID');
+  this.service.getAsset(this.id).subscribe(x=>{
+    this.asset=x;
+
+  }); 
+
+  
+
+  this.assetform=this.formBuilder.group({
+    ad_id:[Validators.compose([Validators.required])],
+    ad_name:[Validators.compose([Validators.required])],
+    ad_type_id:[Validators.compose([Validators.required])],
+    ad_class:[Validators.compose([Validators.required])],
+    
+
+  });
 }
-get formControls(){
-  return this.assetForm.controls;
+get formControl(){
+  return this.assetform.controls;
 }
-upAsset()
+updateAssets()
 {
-  this.asset.ad_id=this.id;
-  this.asset.ad_name=this.assetForm.controls.assetName.value;
-  this.asset.ad_type_id=this.assetForm.controls.assetType.value;
-  this.asset.ad_class=this.assetForm.controls.assetclass.value;
-  this.assetservice.updateAsset(this.id,this.asset).subscribe(x=>{
-    this.toastr.success('Update Successfull','Great!')
-    this.ngOnInit();
-  })
+ this.asset.ad_id=this.assetform.controls.ad_id.value;
+ this.asset.ad_name=this.assetform.controls.ad_name.value;
+ this.asset.ad_type_id=this.assetform.controls.ad_type_id.value;
+ this.asset.ad_class=this.assetform.controls.ad_class.value;
+ console.log(this.asset)
+ this.service.updateAsset(this.id,this.asset).subscribe(res=>{
+  this.toastr.success("update Successfull")
+ })
+
+
 }
-logOut()
-{
-  this.authservice.logout();
-  this.router.navigate(['login']);
-}
-}
+
+}*/

@@ -1,42 +1,70 @@
-<h1 class="display-4" style="text-align: center;"> {{title}}</h1>
-<h4 style="text-align: right;">Welcome {{username}}></h4>
-<ul class="nav nav-pills nav-fill">
-    <li class="nav-item">
-        <a class="nav-link active" href="assetadd">Add Asset</a>
+<div style="text-align: center"><b>WELCOME {{uname}}</b>
+</div>
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+    <!-- Links -->
+    
+    <ul class="navbar-nav">
+      <li class="nav-item">
+          <!--a routerLink="employees" class="nav-link" routerLinkActive="active">Employee List</a-->
+          <a href="create" class="nav-link" routerLinkActive="active"> Asset Add</a>
+      </li>
+      <li class="nav-item">
+          <!--a routerLink="edit/:id" class="nav-link" routerLinkActive="active">Edit Product</a-->
+      </li>
+      <li class="nav-item">
+        <a href="admin" class="nav-link" routerLinkActive="active">Home</a>
     </li>
+    <!--li class="nav-item">
+        <a href="vendorlist" class="nav-link" routerLinkActive="active">Get Vendors</a>
+    </li-->
     <li class="nav-item">
-        <a class="nav-link" href="assetlist"> Asset List</a>
+        <a href="login" class="nav-link" routerLinkActive="active">LogOut</a>
     </li>
-    <li class="nav-item">
-        <button (click)="logOut()" class="btn btn-primary">Logout</button>
-    </li>
-</ul>
+    </ul>
+  </nav>
+  <input type="text" placeholder="Enter AssetName" [(ngModel)]="searchAsset" (ngModelChange)="search(searchAsset)" class="form-control" style="width:500px;">
+
 <div class="panel panel-primary">
     <div class="panel-heading">
+        <h2>Asset List</h2>
     </div>
+
+    
+
+
     <div class="panel-body">
-        <table class="table table-striped table-dark">
+        <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Asset ID</th>
-                    <th>Asset Name</th>
-                    <th>Asset Type</th>
-                    <th>Asset Class</th>
+                    <th>AssetId</th>
+                    <th>AssetName</th>
+                    <th>AssetType</th>
+                    <th>AssetClass</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let asset of assets | async">
-                    <td>{{asset.assetId}}</td>
-                    <td>{{asset.assetName}}</td>
-                    <td>{{asset.assetType }}</td>
-                    <td>{{asset.assetClass}}</td>
-                    <td><button class="btn btn-outline-danger">Delete</button>
-                        <button [routerLink]="['/assetedit',asset.assetId]" class="btn btn-info"
-                            style="margin-left: 10px">Update</button>
+                <tr *ngFor="let asset of assets | async | paginate:{itemsPerPage:3,currentPage:p};let i=index">
+                    <td>{{asset.ad_id}}</td>
+                    <td>{{asset.ad_name}}</td>
+                    <td>{{asset.assettype}}</td>
+                    <td>{{asset.ad_class}}</td>
+                   
+                    <td><button [routerLink]="['/edit',asset.ad_id]" class="btn btn-info" style="margin-left: 10px">Edit</button>
+                        <button (click)="deleteAsset(asset.ad_id)" class="btn btn-danger">Delete</button>
+                        
+                        
+                        
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+
+  
+
+
+    
 </div>
+<pagination-controls (pageChange)="p=$event">
+

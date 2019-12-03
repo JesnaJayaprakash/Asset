@@ -1,0 +1,75 @@
+<div style="text-align: center"><b>WELCOME {{uname}}</b>
+</div>
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+    <!-- Links -->
+
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <!--a routerLink="employees" class="nav-link" routerLinkActive="active">Employee List</a-->
+            <a href="vendoradd" class="nav-link" routerLinkActive="active">Add vendor</a>
+        </li>
+        <li class="nav-item">
+            <!--a routerLink="edit/:id" class="nav-link" routerLinkActive="active">Edit Product</a-->
+        </li>
+        <li class="nav-item">
+                <a href="admin" class="nav-link" routerLinkActive="active">Home</a>
+            </li>
+        <li class="nav-item">
+            <a href="login" class="nav-link" routerLinkActive="active">LogOut</a>
+        </li>
+    </ul>
+</nav>
+<!--input type="text" placeholder="Enter the vendor to search" [(ngModel)]="searchString"
+    (ngModelChange)="search(searchString)" class="form-control" style="width:500px;"-->
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h2>Vendor List</h2>
+    </div>
+
+
+
+
+    <div class="panel-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>VendorID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>AssetType</th>
+                    <th>ValidFrom</th>
+                    <th>ValidTo</th>
+                    <th>Address</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let vendor of vendors | async | paginate:{itemsPerPage:4,currentPage:p};let i=index">
+                    <td>{{vendor.vd_id}}</td>
+                    <td>{{vendor.vd_name}}</td>
+                    <td>{{vendor.vd_type}}</td>
+                    <td>{{vendor.vd_atype_id}}</td>
+                    <td>{{vendor.vd_fromStr}}</td>
+                    <td>{{vendor.vd_toStr}}</td>
+                    <td>{{vendor.vd_addr}}</td>
+
+                    <td><button [routerLink]="['/edits',vendor.vd_id]" class="btn btn-info"
+                            style="margin-left: 10px">Edit</button>
+
+                        <button mwlConfirmationPopover
+                        [popoverTitle]="popoverTitle"
+                        [popoverMessage]="popoverMessage"
+                        placement="left"
+                        (confirm)="confirmClicked = true"
+                        (cancel)="cancelClicked = true" (click)="deletevendor(vendor.vd_id)" class="btn btn-danger">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+
+<pagination-controls (pageChange)="p=$event">

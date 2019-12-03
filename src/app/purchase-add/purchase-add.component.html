@@ -1,0 +1,225 @@
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a href="purchase" class="nav-link" routerLinkActive="active">Purchase List</a>
+        </li>
+        <!--li class="nav-item">
+            <a href="create" class="nav-link" routerLinkActive="active">Add Asset</a>
+
+        </li-->
+        
+        <li class="nav-item">
+            <a href="login" class="nav-link" routerLinkActive="active">LogOut</a>
+        </li>
+
+    </ul>
+    
+</nav>
+
+<!--form [formGroup]="purchaseForm" (ngSubmit)="addpurchase()">
+    <div class="form-group">
+        <label for="pd_orderno">Order No </label>
+        <input type="text " class="form-control" placeholder="Enter name" formControlName="pd_orderno" readonly="true">
+
+    </div>
+    
+
+    <div class="form-group">
+        <label class="col-md-4">Asset Name</label>
+        <input type="text" placeholder="Enter AssetName" [(ngModel)]="searchstring" formControlName="pd_ad_id" class="form-control" style="width:500px;" >
+        <button type="text" value="search" (ngModelChange)="searchAsset(searchstring)" >Search
+        </button>
+    </div>
+    
+  
+       <div [ngClass]="form-group">
+        <label class="col-md-4">Asset Type</label> 
+        <select class="form-control" id="pd_type_id"  name="pd_type_id" (change)="onSelection()">
+            <option value="">Choose Asset Type</option>
+            <option *ngFor="let assettype of assettypes | async" ngValue="{{assettype.at_id}}">{{assettype.at_name}}</option>
+          </select> 
+        </div> 
+       
+        <div *ngIf="purchaseForm.controls['ad_type_id'].invalid && (purchaseForm.controls['ad_type_id'].dirty || purchaseForm.controls['ad_type_id'].touched)" class="alert alert-danger">
+          <div *ngIf="purchaseForm.controls['ad_type_id'].errors.required">
+            Asset Type is required.
+          </div> 
+        </div> 
+        <br>
+        <div [ngClass]="form-group">
+            <label class="col-md-4">Quantity</label>
+            <input type="text" placeholder="Enter Quantity"class="form-control" formControlName="pd_qty" #vd_type />
+        </div>
+    <br>
+
+        <div [ngClass]="form-group">
+            <label class="col-md-4">Vendor Type</label>
+            <select class="form-control" id="pd_type_id"  name="pd_type_id" (change)="onSelection()">
+                <option value="">Choose Vendor Type</option>
+                <option *ngFor="let vendor of vendors | async" ngValue="{{vendor.vd_id}}">{{vendor.vd_name}}</option>
+              </select> 
+            </div> 
+           
+            <div *ngIf="purchaseForm.controls['ad_type_id'].invalid && (purchaseForm.controls['ad_type_id'].dirty || purchaseForm.controls['ad_type_id'].touched)" class="alert alert-danger">
+              <div *ngIf="purchaseForm.controls['ad_type_id'].errors.required">
+                Vendor Type is required.
+              </div> 
+            </div> 
+
+
+              <br>
+                <div [ngClass]="form-group">
+                    <label class="col-md-4" for="Date">Order Date</label>
+                    <input type="date" class="form-control" formControlName="pd_date">
+                </div>
+                <br>
+                
+                <br>
+                <div [ngClass]="form-group">
+                    <label class="col-md-4" >Delivery Status</label>
+                    <input type="text" class="form-control" formControlName="pd_status" readonly="true">
+                </div>
+
+
+
+  
+    
+      
+
+    <button type="submit" class="btn btn-primary" [disabled]="purchaseForm.pristine || purchaseForm.invalid">Submit</button>
+    
+
+</form-->
+<div class="card">
+  <div class="card-body">
+
+    <div class="form-group">
+      <input type="text" placeholder="Enter Assetname" [(ngModel)]="SearchString">
+      <button type="button" value="Search" (click)="searchAssetType(SearchString)" class="btn-info">Search</button>
+    </div>
+    <form [formGroup]="purchaseForm" novalidate (ngSubmit)="addpurchase()">
+      <div [ngClass]="form-group">
+        <label class="col-md-4">Order Number</label>
+        <input type="text" readonly="true" class="form-control" formControlName="pd_orderno" #pd_orderno />
+      </div>
+
+      <div
+        *ngIf="purchaseForm.controls['pd_orderno'].invalid && (purchaseForm.controls['pd_orderno'].dirty || purchaseForm.controls['pd_orderno'].touched)"
+        class="alert alert-danger">
+        <div *ngIf="purchaseForm.controls['pd_orderno'].errors.required">
+          Order Number is required.
+        </div>
+      </div>
+
+      <!-- <div [ngClass]="form-group"> 
+            <mat-form-field>
+              <mat-label>Asset Type</mat-label>
+              <mat-select [(ngModel)]="pd_type_id" name="pd_type_id" formControlName="pd_type_id" (selectionChange)="onOptionsSelected($event.value)">
+                <mat-option *ngFor="let assettype of assettypes | async"  [value]="assettype.at_id">{{assettype.at_name}}</mat-option>
+              </mat-select>
+            </mat-form-field>        
+         
+          <div *ngIf="purchaseForm.controls['pd_type_id'].invalid && (purchaseForm.controls['pd_type_id'].dirty || purchaseForm.controls['pd_type_id'].touched)" class="alert alert-danger">
+            <div *ngIf="purchaseForm.controls['pd_type_id'].errors.required">
+              Asset Type is required.
+            </div> 
+          </div> 
+        </div>
+ -->
+      <div [ngClass]="form-group">
+        <label class="col-md-4">Asset Type</label>
+
+        <select class="form-control" id="pd_type_id" name="pd_type_id" formControlName="pd_type_id" #pd_type_id
+          (change)='onOptionsSelection(pd_type_id.value)'>
+          <option value="">Choose Asset Type</option>
+          <option *ngFor="let assettype of assettypes | async" value="{{assettype.at_id}}">{{assettype.at_name}}
+          </option>
+        </select>
+      </div>
+
+      <div
+        *ngIf="purchaseForm.controls['pd_type_id'].invalid && (purchaseForm.controls['pd_type_id'].dirty || purchaseForm.controls['pd_type_id'].touched)"
+        class="alert alert-danger">
+        <div *ngIf="purchaseForm.controls['pd_type_id'].errors.required">
+          Asset Type is required.
+        </div>
+      </div>
+
+
+
+      <div [ngClass]="form-group">
+        <label class="col-md-4">Vendor</label>
+
+        <select class="form-control" id="pd_vendor_id" name="pd_vendor_id" formControlName="pd_vendor_id">
+          <option value="">Choose Vendor</option>
+          <option *ngFor="let vendor of vendors | async" ngValue="{{vendor.vd_id}}">{{vendor.vd_name}}
+          </option>
+        </select>
+      </div>
+
+      <div
+        *ngIf="purchaseForm.controls['pd_vendor_id'].invalid && (purchaseForm.controls['pd_vendor_id'].dirty || purchaseForm.controls['pd_vendor_id'].touched)"
+        class="alert alert-danger">
+        <div *ngIf="purchaseForm.controls['pd_vendor_id'].errors.required">
+          Vendor is required.
+        </div>
+      </div>
+
+
+
+      <!--    <div [ngClass]="form-group">
+        <label class="col-md-4">Vendor</label>
+
+        <select class="form-control" id="pd_vendor_id" name="pd_vendor_id" formControlName="pd_vendor_id">
+          <option value="">Choose Vendor</option>
+          <option *ngFor="let vendor of vendors | async" ngValue="{{vendor.vd_id}}">{{vendor.vd_name}}
+          </option>
+        </select>
+      </div>
+
+      <div
+        *ngIf="purchaseForm.controls['pd_vendor_id'].invalid && (purchaseForm.controls['pd_vendor_id'].dirty || purchaseForm.controls['pd_vendor_id'].touched)"
+        class="alert alert-danger">
+        <div *ngIf="purchaseForm.controls['pd_vendor_id'].errors.required">
+          Vendor is required.
+        </div>
+      </div>  -->
+
+      <!-- <div [ngClass]="form-group"> 
+            <mat-form-field>
+              <mat-label>Vendor</mat-label>
+              <mat-select [(ngModel)]="pd_vendor_id" name="pd_vendor_id" formControlName="pd_vendor_id" >
+                <mat-option *ngFor="let vendor of vendors | async"  [value]="vendor.vd_id">{{vendor.vd_name}}</mat-option>
+              </mat-select>
+            </mat-form-field>        
+         
+          <div *ngIf="purchaseForm.controls['pd_vendor_id'].invalid && (purchaseForm.controls['pd_vendor_id'].dirty || purchaseForm.controls['pd_vendor_id'].touched)" class="alert alert-danger">
+            <div *ngIf="purchaseForm.controls['pd_vendor_id'].errors.required">
+              Vendor is required.
+            </div> 
+          </div> 
+        </div>
+ -->
+      <div [ngClass]="form-group">
+        <label class="col-md-4">Quantity</label>
+        <input type="number" class="form-control" formControlName="pd_qty" #pd_qty />
+      </div>
+
+      <div
+        *ngIf="purchaseForm.controls['pd_qty'].invalid && (purchaseForm.controls['pd_qty'].dirty || purchaseForm.controls['pd_qty'].touched)"
+        class="alert alert-danger">
+        <div *ngIf="purchaseForm.controls['pd_qty'].errors.required">
+          Quantity is required.
+        </div>
+      </div>
+
+      <br>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary" [disabled]="purchaseForm.pristine || purchaseForm.invalid">
+          Place Order
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
